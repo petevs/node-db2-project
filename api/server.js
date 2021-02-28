@@ -10,6 +10,6 @@ server.get('/', (req, res) => {
         message: 'hi there'
     })
 })
-server.use('/cars', carsRouter)
+server.use('/api/cars', carsRouter)
 
 module.exports = server

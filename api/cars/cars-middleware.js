@@ -21,22 +21,23 @@ const checkCarId = async (req, res, next) => {
 
 const checkCarPayload = async (req, res, next) => {
   // DO YOUR MAGIC
-  if (
-    !req.body.vin ||
-    !req.body.make ||
-    !req.body.model ||
-    !req.body.mileage
-    ) {
+
+  const required = ["vin", "make", "model", "mileage"]
+
+  for (const field of required){
+    if(!req.body[field]){
       return res.status(400).json({
-        message: "field is missing"
+        message: `${field} is missing`
       })
     }
+  }
 
   next() 
 }
 
 const checkVinNumberValid = async (req, res, next) => {
   // DO YOUR MAGIC
+
   const isValidVin = vinValidator.validate(req.body.vin)
   if(!isValidVin){
     return res.status(400).json({
