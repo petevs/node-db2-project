@@ -1,7 +1,7 @@
 // DO YOUR MAGIC
 const router = require('express').Router()
 const cars = require('./cars-model')
-const middleware = require('./cars-middleware')
+const {checkCarId, checkCarPayload} = require('./cars-middleware')
 
 //Get Cars
 router.get('/', async (req, res) => {
@@ -14,7 +14,7 @@ router.get('/', async (req, res) => {
 })
 
 //Get Car By ID
-router.get('/:id', middleware.checkCarId, async (req, res, next) => {
+router.get('/:id', checkCarId, async (req, res, next) => {
     try {
         res.json(req.car)
     } catch (err) {
@@ -22,13 +22,20 @@ router.get('/:id', middleware.checkCarId, async (req, res, next) => {
     }
 })
 
-router.post('/', async ( req, res, next) => {
+router.post('/', checkCarPayload, async ( req, res, next) => {
     try{
         const result = await cars.create(req.body)
         res.json(result)
     } catch (err) {
         next(err)
     }
+})
+
+router.use((err, req, res, next) => {
+    res.status(500).json({
+        message: 'something went wrong inside cars router',
+        errMessage: err.message
+    })
 })
 
 module.exports = router
